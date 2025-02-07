@@ -19,7 +19,6 @@ import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.repositories.epg.EpgRepository
 import top.yogiczy.mytv.data.repositories.iptv.IptvRepository
 import top.yogiczy.mytv.data.utils.Constants
-import top.yogiczy.mytv.utils.ApkInstaller
 import top.yogiczy.mytv.utils.Loggable
 import top.yogiczy.mytv.utils.Logger
 import java.io.File
@@ -64,10 +63,6 @@ object HttpServer : Loggable() {
                     handleSetSettings(request, response)
                 }
 
-                server.post("/api/upload/apk") { request, response ->
-                    handleUploadApk(request, response, context)
-                }
-
                 HttpServer.showToast = showToast
                 log.i("服务已启动: 0.0.0.0:${SERVER_PORT}")
             } catch (ex: Exception) {
@@ -108,7 +103,6 @@ object HttpServer : Loggable() {
                 Json.encodeToString(
                     AllSettings(
                         appTitle = Constants.APP_TITLE,
-                        appRepo = Constants.APP_REPO,
                         iptvSourceUrl = SP.iptvSourceUrl,
                         epgXmlUrl = SP.epgXmlUrl,
                         videoPlayerUserAgent = SP.videoPlayerUserAgent,
@@ -143,39 +137,6 @@ object HttpServer : Loggable() {
         wrapResponse(response).send("success")
     }
 
-    private fun handleUploadApk(
-        request: AsyncHttpServerRequest,
-        response: AsyncHttpServerResponse,
-        context: Context,
-    ) {
-        val body = request.getBody<MultipartFormDataBody>()
-
-        val os = uploadedApkFile.outputStream()
-        val contentLength = request.headers["Content-Length"]?.toLong() ?: 1
-        var hasReceived = 0L
-
-        body.setMultipartCallback { part ->
-            if (part.isFile) {
-                body.setDataCallback { _, bb ->
-                    val byteArray = bb.allByteArray
-                    hasReceived += byteArray.size
-                    showToast("正在接收文件: ${(hasReceived * 100f / contentLength).toInt()}%")
-                    os.write(byteArray)
-                }
-            }
-        }
-
-        body.setEndCallback {
-            showToast("文件接收完成")
-            body.dataEmitter.close()
-            os.flush()
-            os.close()
-            ApkInstaller.installApk(context, uploadedApkFile.path)
-        }
-
-        wrapResponse(response).send("success")
-    }
-
     private fun getLocalIpAddress(): String {
         val defaultIp = "0.0.0.0"
 
@@ -202,7 +163,6 @@ object HttpServer : Loggable() {
 @Serializable
 private data class AllSettings(
     val appTitle: String,
-    val appRepo: String,
     val iptvSourceUrl: String,
     val epgXmlUrl: String,
     val videoPlayerUserAgent: String,

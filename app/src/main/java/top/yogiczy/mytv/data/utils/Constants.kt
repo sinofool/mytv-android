@@ -10,11 +10,6 @@ object Constants {
     const val APP_TITLE = "我的电视"
 
     /**
-     * 应用 代码仓库
-     */
-    const val APP_REPO = "https://github.com/yaoxieyoulei/mytv-android"
-
-    /**
      * IPTV源地址
      */
     const val IPTV_SOURCE_URL = "https://sinofool.cn/dl/direct.m3u"
@@ -33,17 +28,6 @@ object Constants {
      * 节目单刷新时间阈值（小时）
      */
     const val EPG_REFRESH_TIME_THRESHOLD = 2 // 不到2点不刷新
-
-    /**
-     * Git最新版本信息
-     */
-    const val GIT_RELEASE_LATEST_URL =
-        "https://api.github.com/repos/yaoxieyoulei/mytv-android/releases/latest"
-
-    /**
-     * GitHub加速代理地址
-     */
-    const val GITHUB_PROXY = "https://mirror.ghproxy.com/"
 
     /**
      * HTTP请求重试次数

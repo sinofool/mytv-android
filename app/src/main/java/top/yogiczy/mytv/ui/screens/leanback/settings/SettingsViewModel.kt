@@ -18,14 +18,6 @@ class LeanbackSettingsViewModel : ViewModel() {
             SP.appBootLaunch = value
         }
 
-    private var _appLastLatestVersion by mutableStateOf(SP.appLastLatestVersion)
-    var appLastLatestVersion: String
-        get() = _appLastLatestVersion
-        set(value) {
-            _appLastLatestVersion = value
-            SP.appLastLatestVersion = value
-        }
-
     private var _appDeviceDisplayType by mutableStateOf(SP.appDeviceDisplayType)
     var appDeviceDisplayType: SP.AppDeviceDisplayType
         get() = _appDeviceDisplayType

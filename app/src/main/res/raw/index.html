@@ -85,14 +85,6 @@
                             </template>
                         </van-cell>
                     </van-cell-group>
-
-                    <van-cell-group inset title="调试">
-                        <van-cell title="上传apk">
-                            <template #extra>
-                                <van-uploader :after-read="uploaderAfterRead" accept=".apk" />
-                            </template>
-                        </van-cell>
-                    </van-cell-group>
                 </template>
 
                 <template v-else-if="tabActive === 'log'">
@@ -183,26 +175,12 @@
                     await refreshSettings()
                 })
 
-                async function uploaderAfterRead(file) {
-                    try {
-                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
-                        const formData = new FormData()
-                        formData.append('filename', file.file)
-                        await requestApi('/api/upload/apk', { method: "POST", body: formData })
-                        vant.closeToast()
-                    } catch (e) {
-                        vant.showFailToast('上传apk失败')
-                        console.error(e)
-                    }
-                }
-
                 return {
                     dayjs,
                     isDark,
                     tabActive,
                     settings,
                     confirmSettings,
-                    uploaderAfterRead,
                 }
             }
         })
